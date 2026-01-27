@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-content">
+
+{% if coin %}
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;">
+        {% if coin.image %}
+            <img src="{{ coin.image }}"
+                 alt="{{ coin.name }}"
+                 style="width:64px;height:64px;border-radius:50%;">
+        {% endif %}
+        <div>
+            <h1 style="color:white;margin:0;">{{ coin.name }}</h1>
+            <span style="color:#94a3b8;font-size:1.2rem;">
+                {{ coin.symbol }}
+            </span>
+        </div>
+    </div>
+
+    <!-- PRICE CARD -->
+    <div class="crypto-card">
+        <h3 style="color:#6fb1ff;">Current Price</h3>
+
+        <h2 style="color:white;">
+            ${{ "%.2f"|format(coin.price) }}
+        </h2>
+
+        {% if coin.change_24h >= 0 %}
+            <span class="price-change positive">
+                +{{ "%.2f"|format(coin.change_24h) }}%
+            </span>
+        {% else %}
+            <span class="price-change negative">
+                {{ "%.2f"|format(coin.change_24h) }}%
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- MARKET STATS -->
+    <div class="crypto-card" style="margin-top:1.5rem;">
+        <h3 style="color:#6fb1ff;">Market Statistics</h3>
+
+        <p>Market Cap:
+            <strong>${{ "%.0f"|format(coin.market_cap) }}</strong>
+        </p>
+
+        <p>Volume (24h):
+            <strong>${{ "%.0f"|format(coin.volume_24h) }}</strong>
+        </p>
+
+        <p>24h High:
+            <strong>${{ "%.2f"|format(coin.high_24h) }}</strong>
+        </p>
+
+        <p>24h Low:
+            <strong>${{ "%.2f"|format(coin.low_24h) }}</strong>
+        </p>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div style="margin:2rem 0;display:flex;gap:1rem;flex-wrap:wrap;">
+
+        {% if in_watchlist %}
+            <form method="POST"
+                  action="{{ url_for('remove_from_watchlist', coin_id=coin.id) }}">
+                <button class="btn btn-danger">
+                    Remove from Watchlist
+                </button>
+            </form>
+        {% else %}
+            <form method="POST"
+                  action="{{ url_for('add_to_watchlist', coin_id=coin.id) }}">
+                <button class="btn btn-success">
+                    Add to Watchlist
+                </button>
+            </form>
+        {% endif %}
+
+        <a href="{{ url_for('crypto_market') }}"
+           class="btn btn-secondary">
+            Back to Market
+        </a>
+    </div>
+
+    <!-- DESCRIPTION -->
+    {% if coin.description %}
+    <div class="crypto-card">
+        <h3 style="color:#6fb1ff;">About {{ coin.name }}</h3>
+        <p style="color:#d1d8e6;">
+            {{ coin.description[:500] }}
+            {% if coin.description|length > 500 %}...{% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+{% else %}
+
+    <div style="text-align:center;margin:3rem 0;">
+        <h2 style="color:white;">Coin Not Found</h2>
+        <a href="{{ url_for('crypto_search') }}"
+           class="btn btn-primary">
+            Search Cryptocurrencies
+        </a>
+    </div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

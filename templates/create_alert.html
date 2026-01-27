@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-content">
+    <div class="dashboard-hero">
+        <h1>Create Price Alert</h1>
+        <p>Set up notifications for cryptocurrency price movements</p>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+        <form method="POST" class="container">
+            <h3 style="color: #6fb1ff; margin-bottom: 1.5rem;">Alert Details</h3>
+            
+            <!-- Cryptocurrency Selection -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #ffffff; font-weight: 500;">Cryptocurrency</label>
+                <select name="coin_id" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #1e293b; background: #020617; color: #ffffff;">
+                    <option value="">Select a cryptocurrency</option>
+                    {% for coin in coins %}
+                    <option value="{{ coin.id }}">{{ coin.name }} ({{ coin.symbol }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Alert Type -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #ffffff; font-weight: 500;">Alert Type</label>
+                <div style="display: flex; gap: 1rem;">
+                    <label style="display: flex; align-items: center; color: #ffffff; cursor: pointer;">
+                        <input type="radio" name="alert_type" value="above" required style="margin-right: 0.5rem;">
+                        Alert when price goes ABOVE
+                    </label>
+                    <label style="display: flex; align-items: center; color: #ffffff; cursor: pointer;">
+                        <input type="radio" name="alert_type" value="below" required style="margin-right: 0.5rem;">
+                        Alert when price goes BELOW
+                    </label>
+                </div>
+            </div>
+
+            <!-- Target Price -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #ffffff; font-weight: 500;">Target Price (USD)</label>
+                <input type="number" 
+                       name="target_price" 
+                       step="0.01" 
+                       min="0.01" 
+                       required 
+                       placeholder="Enter target price..."
+                       style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #1e293b; background: #020617; color: #ffffff;">
+            </div>
+
+            <!-- Hidden field for coin name -->
+            <input type="hidden" name="coin_name" id="coin_name">
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Create Alert</button>
+                <a href="{{ url_for('alerts_page') }}" class="btn btn-secondary" style="flex: 1; text-align: center; text-decoration: none;">Cancel</a>
+            </div>
+        </form>
+
+        <!-- Alert Examples -->
+        <div class="crypto-card" style="margin-top: 2rem;">
+            <h3 style="color: #6fb1ff; margin-bottom: 1rem;">Popular Alert Examples</h3>
+            <div style="color: #d1d8e6; line-height: 1.6;">
+                <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <strong>Bitcoin above $50,000</strong><br>
+                    <span style="color: #94a3b8; font-size: 0.9rem;">Get notified when Bitcoin breaks the $50,000 resistance level</span>
+                </div>
+                <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <strong>Ethereum below $2,500</strong><br>
+                    <span style="color: #94a3b8; font-size: 0.9rem;">Buy opportunity alert when Ethereum drops to $2,500</span>
+                </div>
+                <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <strong>Any crypto above your target</strong><br>
+                    <span style="color: #94a3b8; font-size: 0.9rem;">Set alerts for your desired buy/sell prices</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update coin name when selection changes
+document.querySelector('select[name="coin_id"]').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const coinName = selectedOption.text.split(' (')[0]; // Extract name before symbol
+    document.getElementById('coin_name').value = coinName;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}My Watchlist | AWS Crypto Tracker{% endblock %}
+
+{% block content %}
+<div class="page-content">
+
+    <div class="dashboard-hero">
+        <h1>⭐ My Watchlist</h1>
+        <p>Track your favorite cryptocurrencies</p>
+    </div>
+
+    {% if watchlist %}
+
+    <div class="watchlist-container">
+        <div class="watchlist-header">
+            <h2>Your Watchlist ({{ watchlist|length }} coins)</h2>
+            <a href="{{ url_for('crypto_market') }}" class="btn btn-primary btn-sm">
+                Add More
+            </a>
+        </div>
+
+        <div class="watchlist-grid">
+            {% for coin in watchlist %}
+            <div class="watchlist-item">
+
+                <div>
+                    <strong>{{ coin.name }}</strong>
+                    <span class="crypto-symbol">{{ coin.symbol }}</span>
+
+                    <div class="crypto-price">
+                        ${{ "%.2f"|format(coin.price) }}
+                    </div>
+
+                    {% if coin.change_24h >= 0 %}
+                        <span class="price-change positive">
+                            +{{ "%.2f"|format(coin.change_24h) }}%
+                        </span>
+                    {% else %}
+                        <span class="price-change negative">
+                            {{ "%.2f"|format(coin.change_24h) }}%
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    <a href="{{ url_for('crypto_details', coin_id=coin.id) }}"
+                       class="btn btn-primary btn-sm">
+                        View Details
+                    </a>
+
+                    <form method="POST"
+                          action="{{ url_for('remove_from_watchlist', coin_id=coin.id) }}">
+                        <button class="btn btn-danger btn-sm">
+                            Remove
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- WATCHLIST STATS -->
+    <div class="crypto-card" style="margin-top:3rem;">
+        <h3 style="color:#6fb1ff;">Watchlist Statistics</h3>
+
+        <p>
+            <strong>Total Coins:</strong> {{ watchlist|length }}
+        </p>
+
+        <p>
+            <strong>Total Value:</strong>
+            ${{ "%.2f"|format(watchlist | sum(attribute='price')) }}
+        </p>
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY STATE -->
+    <div style="text-align:center;margin:3rem 0;">
+        <h3 style="color:white;">Your Watchlist is Empty</h3>
+        <p style="color:#94a3b8;">
+            Add cryptocurrencies to track them here.
+        </p>
+        <a href="{{ url_for('crypto_market') }}"
+           class="btn btn-primary">
+            Browse Cryptocurrencies
+        </a>
+    </div>
+
+    {% endif %}
+
+    <!-- QUICK ACTIONS -->
+    <div style="text-align:center;margin:3rem 0;">
+        <a href="{{ url_for('crypto_market') }}" class="btn btn-secondary">
+            Back to Market
+        </a>
+        <a href="{{ url_for('alerts_page') }}" class="btn btn-primary">
+            Manage Alerts
+        </a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Guest Dashboard | AWS Crypto Tracker{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-hero">
+    <h1>Guest Dashboard</h1>
+    <p>Explore cryptocurrency market data without registration. Sign up for personalized features like watchlists and price alerts.</p>
+    <div style="margin-top: 1rem;">
+        <a href="{{ url_for('signup') }}" class="btn btn-primary">Sign Up for More Features</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+    </div>
+</section>
+
+<!-- Market Overview -->
+<div class="market-stats">
+    <div class="stat-card">
+        <div class="stat-value">{{ market_stats.total_coins }}</div>
+        <div class="stat-label">Tracked Coins</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">
+            {% if market_stats.avg_change_24h >= 0 %}
+                +{{ "%.2f"|format(market_stats.avg_change_24h) }}%
+            {% else %}
+                {{ "%.2f"|format(market_stats.avg_change_24h) }}%
+            {% endif %}
+        </div>
+        <div class="stat-label">Market Average (24h)</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">📈</div>
+        <div class="stat-label">Live Market Data</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">🔓</div>
+        <div class="stat-label">Guest Access</div>
+    </div>
+</div>
+
+<!-- Top Cryptocurrencies -->
+<section style="margin: 3rem 0;">
+    <h2 style="color: #ffffff; margin-bottom: 1.5rem;">🔝 Top Cryptocurrencies</h2>
+    <div style="overflow-x: auto;">
+        <table class="crypto-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Market Cap</th>
+                    <th>Volume (24h)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coin in market_data %}
+                <tr>
+                    <td>{{ coin.rank }}</td>
+                    <td>
+                        <a href="{{ url_for('crypto_details', coin_id=coin.id) }}" style="color: #6fb1ff; text-decoration: none;">
+                            {{ coin.name }}
+                        </a>
+                    </td>
+                    <td><span class="crypto-symbol">{{ coin.symbol }}</span></td>
+                    <td class="crypto-price">${{ "%.2f"|format(coin.price) }}</td>
+                    <td>
+                        {% if coin.change_24h >= 0 %}
+                            <span class="price-change positive">+{{ "%.2f"|format(coin.change_24h) }}%</span>
+                        {% else %}
+                            <span class="price-change negative">{{ "%.2f"|format(coin.change_24h) }}%</span>
+                        {% endif %}
+                    </td>
+                    <td>${{ "%.0f"|format(coin.market_cap) }}</td>
+                    <td>${{ "%.0f"|format(coin.volume_24h) }}</td>
+                    <td>
+                        <a href="{{ url_for('crypto_details', coin_id=coin.id) }}" class="btn btn-sm" style="font-size: 0.8rem;">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Market Highlights -->
+<section style="margin: 3rem 0;">
+    <h2 style="color: #ffffff; margin-bottom: 1.5rem;">📊 Market Highlights</h2>
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <h3>📈 Top Gainer (24h)</h3>
+            {% if market_stats.top_gainer %}
+                <div style="margin: 1rem 0;">
+                    <strong>{{ market_stats.top_gainer.name }}</strong>
+                    <span class="crypto-symbol">{{ market_stats.top_gainer.symbol }}</span>
+                    <div class="price-change positive">+{{ "%.2f"|format(market_stats.top_gainer.change_24h) }}%</div>
+                    <div class="crypto-price">${{ "%.2f"|format(market_stats.top_gainer.price) }}</div>
+                </div>
+            {% else %}
+                <p style="color: #94a3b8;">No data available</p>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>📉 Top Loser (24h)</h3>
+            {% if market_stats.top_loser %}
+                <div style="margin: 1rem 0;">
+                    <strong>{{ market_stats.top_loser.name }}</strong>
+                    <span class="crypto-symbol">{{ market_stats.top_loser.symbol }}</span>
+                    <div class="price-change negative">{{ "%.2f"|format(market_stats.top_loser.change_24h) }}%</div>
+                    <div class="crypto-price">${{ "%.2f"|format(market_stats.top_loser.price) }}</div>
+                </div>
+            {% else %}
+                <p style="color: #94a3b8;">No data available</p>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>🔍 Search Cryptocurrencies</h3>
+            <p>Search for any cryptocurrency to view detailed information and market data.</p>
+            <a href="{{ url_for('crypto_search') }}" class="btn btn-secondary" style="margin-top: 1rem;">
+                Search Coins
+            </a>
+        </div>
+
+        <div class="dash-card">
+            <h3>📱 Features Available</h3>
+            <ul style="color: #94a3b8; padding-left: 1.5rem;">
+                <li>View cryptocurrency prices</li>
+                <li>Market statistics</li>
+                <li>Price changes (24h)</li>
+                <li>Market cap and volume</li>
+                <li>Coin details</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Features for Registered Users -->
+<section class="crypto-card" style="margin: 3rem 0;">
+    <h3 style="color: #6fb1ff; margin-bottom: 1rem;">🚀 Unlock More Features</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        <div>
+            <strong>📋 Personal Watchlist</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Track your favorite cryptocurrencies</p>
+        </div>
+        <div>
+            <strong>🔔 Price Alerts</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Get notified when prices change</p>
+        </div>
+        <div>
+            <strong>📊 Portfolio Tracking</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Monitor your crypto investments</p>
+        </div>
+        <div>
+            <strong>💾 Save Preferences</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Personalized dashboard experience</p>
+        </div>
+    </div>
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{{ url_for('signup') }}" class="btn btn-primary" style="margin-right: 1rem;">Sign Up Now</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+    </div>
+</section>
+
+{% endblock %}

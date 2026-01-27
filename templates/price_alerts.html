@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-content">
+    <div class="dashboard-hero">
+        <h1>Price Alerts</h1>
+        <p>Manage your cryptocurrency price alerts and notifications</p>
+    </div>
+
+    <!-- Create New Alert Button -->
+    <div style="margin: 2rem 0;">
+        <a href="{{ url_for('create_alert') }}" class="btn btn-primary">Create New Alert</a>
+    </div>
+
+    <!-- Alerts List -->
+    <div class="alerts-container">
+        {% if alerts %}
+            {% for alert in alerts %}
+            <div class="alert-item {% if alert.active %}active{% else %}inactive{% endif %}">
+                <div class="alert-info">
+                    <h4>{{ alert.coin_name }} - {{ alert.alert_type.title() }} ${{ "%.2f"|format(alert.target_price) }}</h4>
+                    <p>Created: {{ alert.created_at }} | Status: {% if alert.active %}Active{% else %}Inactive{% endif %}</p>
+                </div>
+                <div class="alert-actions">
+                    {% if alert.active %}
+                        <button class="btn btn-secondary btn-sm" onclick="toggleAlert('{{ alert.id }}', false)">Disable</button>
+                    {% else %}
+                        <button class="btn btn-success btn-sm" onclick="toggleAlert('{{ alert.id }}', true)">Enable</button>
+                    {% endif %}
+                    <button class="btn btn-danger btn-sm" onclick="deleteAlert('{{ alert.id }}')">Delete</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; margin: 3rem 0;">
+                <h3 style="color: #ffffff;">No Price Alerts Yet</h3>
+                <p style="color: #94a3b8; margin: 1rem 0;">Create your first price alert to get notified when cryptocurrencies hit your target prices.</p>
+                <a href="{{ url_for('create_alert') }}" class="btn btn-primary">Create Your First Alert</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- How It Works -->
+    <div class="crypto-card" style="margin: 3rem 0;">
+        <h3 style="color: #6fb1ff; margin-bottom: 1rem;">How Price Alerts Work</h3>
+        <div style="color: #d1d8e6; line-height: 1.6;">
+            <ul style="padding-left: 1.5rem;">
+                <li style="margin-bottom: 0.5rem;">Set target prices for any cryptocurrency</li>
+                <li style="margin-bottom: 0.5rem;">Choose whether to alert when price goes above or below your target</li>
+                <li style="margin-bottom: 0.5rem;">Get instant notifications when your conditions are met</li>
+                <li style="margin-bottom: 0.5rem;">Manage multiple alerts for different cryptocurrencies</li>
+                <li>Enable or disable alerts without deleting them</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleAlert(alertId, active) {
+    const action = active ? 'enable' : 'disable';
+    if (confirm(`Are you sure you want to ${action} this alert?`)) {
+        fetch(`/alerts/toggle/${alertId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Failed to toggle alert'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to toggle alert');
+        });
+    }
+}
+
+function deleteAlert(alertId) {
+    if (confirm('Are you sure you want to delete this alert?')) {
+        fetch(`/alerts/delete/${alertId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Failed to delete alert'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete alert');
+        });
+    }
+}
+</script>
+{% endblock %}

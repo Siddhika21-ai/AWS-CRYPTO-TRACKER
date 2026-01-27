@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | AWS Crypto Tracker{% endblock %}
+{% block content %}
+
+<section class="dashboard-hero">
+    <h1>Admin Dashboard — {{ username }}</h1>
+    <p>Manage platform operations, monitor users, and oversee the AWS-based cryptocurrency tracking system.</p>
+</section>
+
+<!-- Platform Statistics -->
+<div class="market-stats">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_watchlists }}</div>
+        <div class="stat-label">Watchlist Items</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_alerts }}</div>
+        <div class="stat-label">Price Alerts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ market_stats.total_coins }}</div>
+        <div class="stat-label">Tracked Coins</div>
+    </div>
+</div>
+
+<!-- Market Overview -->
+<section id="market-overview" style="margin: 3rem 0;">
+    <h2 style="color: white;">📊 Market Overview</h2>
+    <div class="dashboard-grid">
+
+        <div class="dash-card">
+            <h3>📈 Top Gainer</h3>
+            {% if market_stats.top_gainer %}
+                <strong>{{ market_stats.top_gainer.name }}</strong>
+                <div class="price-change positive">
+                    +{{ "%.2f"|format(market_stats.top_gainer.change_24h) }}%
+                </div>
+                <div>${{ "%.2f"|format(market_stats.top_gainer.price) }}</div>
+            {% else %}
+                <p>No data</p>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>📉 Top Loser</h3>
+            {% if market_stats.top_loser %}
+                <strong>{{ market_stats.top_loser.name }}</strong>
+                <div class="price-change negative">
+                    {{ "%.2f"|format(market_stats.top_loser.change_24h) }}%
+                </div>
+                <div>${{ "%.2f"|format(market_stats.top_loser.price) }}</div>
+            {% else %}
+                <p>No data</p>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>📊 Avg Change</h3>
+            {% if market_stats.avg_change_24h >= 0 %}
+                <div class="price-change positive">
+                    +{{ "%.2f"|format(market_stats.avg_change_24h) }}%
+                </div>
+            {% else %}
+                <div class="price-change negative">
+                    {{ "%.2f"|format(market_stats.avg_change_24h) }}%
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="dash-card">
+            <h3>🟢 System Status</h3>
+            <p style="color:#22c55e;">All services running</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Top Coins -->
+<section style="margin:3rem 0;">
+    <h2 style="color:white;">🔝 Top Cryptocurrencies</h2>
+    <table class="crypto-table">
+        <thead>
+            <tr>
+                <th>Rank</th><th>Name</th><th>Symbol</th>
+                <th>Price</th><th>24h</th><th>Market Cap</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coin in market_data %}
+            <tr>
+                <td>{{ coin.rank }}</td>
+                <td>{{ coin.name }}</td>
+                <td>{{ coin.symbol }}</td>
+                <td>${{ "%.2f"|format(coin.price) }}</td>
+                <td>
+                    {% if coin.change_24h >= 0 %}
+                        <span class="price-change positive">+{{ "%.2f"|format(coin.change_24h) }}%</span>
+                    {% else %}
+                        <span class="price-change negative">{{ "%.2f"|format(coin.change_24h) }}%</span>
+                    {% endif %}
+                </td>
+                <td>${{ "%.0f"|format(coin.market_cap) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<!-- User Activity -->
+<section style="margin:3rem 0;">
+    <h2 style="color:white;">👥 User Activity</h2>
+    <table class="crypto-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Watchlist</th>
+                <th>Alerts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, watchlist in user_actions.items() %}
+            <tr>
+                <td><strong>{{ user }}</strong></td>
+
+                <td>
+                    {% if watchlist %}
+                        {{ watchlist|length }} items :
+                        {% for coin in watchlist %}
+                            <span class="crypto-symbol">{{ coin }}</span>
+                        {% endfor %}
+                    {% else %}
+                        No items
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if user in price_alerts and price_alerts[user] %}
+                        {% for alert in price_alerts[user] %}
+                            <div>
+                                <strong>{{ alert.coin_name }}</strong> |
+                                {{ alert.alert_type }} |
+                                ${{ "%.2f"|format(alert.target_price) }}
+                                {% if alert.active %}
+                                    <span class="price-change positive">Active</span>
+                                {% else %}
+                                    <span class="price-change negative">Inactive</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        No alerts
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<!-- Admin Actions (RESTORED ✅) -->
+<section style="margin:3rem 0;">
+    <h2 style="color:white;">⚙️ Admin Actions</h2>
+    <div class="dashboard-grid">
+        <div class="dash-card">👥 User Management</div>
+        <div class="dash-card">📡 System Monitoring</div>
+        <div class="dash-card">🛠 AWS Infrastructure</div>
+        <div class="dash-card">📊 Analytics</div>
+    </div>
+</section>
+
+{% endblock %}

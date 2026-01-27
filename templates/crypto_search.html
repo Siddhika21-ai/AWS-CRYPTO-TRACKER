@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-content">
+
+    <h1 style="color:white;">Search Cryptocurrencies</h1>
+    <p style="color:#94a3b8;">Search and view crypto details</p>
+
+    <!-- Search Form -->
+    <form method="POST" style="margin:2rem 0; display:flex; gap:1rem;">
+        <input type="text"
+               name="query"
+               placeholder="Search Bitcoin, Ethereum, BTC"
+               value="{{ query | default('') }}"
+               required
+               class="search-bar">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Search Results -->
+    {% if search_results %}
+        <div class="crypto-grid">
+
+            {% for coin in search_results %}
+            <div class="crypto-card">
+
+                <div class="crypto-card-header">
+                    <div>
+                        <div class="crypto-name">{{ coin.name }}</div>
+                        <span class="crypto-symbol">{{ coin.symbol }}</span>
+                    </div>
+                    <div style="color:#94a3b8;">
+                        #{{ coin.market_cap_rank | default("—") }}
+                    </div>
+                </div>
+
+                <p style="color:#94a3b8; margin:1rem 0;">
+                    Price available on details page
+                </p>
+
+                <a href="{{ url_for('crypto_details', coin_id=coin.id) }}"
+                   class="btn btn-primary btn-sm">
+                    View Details
+                </a>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    {% elif query %}
+        <p style="color:#94a3b8;">
+            No results found for "{{ query }}"
+        </p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

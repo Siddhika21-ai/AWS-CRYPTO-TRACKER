@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | AWS Crypto Tracker{% endblock %}
+
+{% block content %}
+
+<!-- DASHBOARD HERO -->
+<section class="dashboard-hero">
+    <h1>Welcome back, {{ username }}! 🚀</h1>
+    <p>Track your cryptocurrency portfolio and market insights in real-time</p>
+</section>
+
+<!-- Market Stats -->
+<div class="market-stats">
+    <div class="stat-card">
+        <div class="stat-value">{{ top_cryptocurrencies|length }}</div>
+        <div class="stat-label">Cryptocurrencies Tracked</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ alerts_count }}</div>
+        <div class="stat-label">Active Alerts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ market_stats.positive_changes }}</div>
+        <div class="stat-label">Gainers (24h)</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ market_stats.negative_changes }}</div>
+        <div class="stat-label">Losers (24h)</div>
+    </div>
+</div>
+
+<!-- TOP CRYPTOCURRENCIES -->
+<section style="margin: 3rem 0;">
+    <h2 style="color: #ffffff; margin-bottom: 1.5rem;">🔥 Top Cryptocurrencies</h2>
+    <div class="crypto-grid">
+        {% for coin in top_cryptocurrencies %}
+        <div class="crypto-card">
+            <div class="crypto-card-header">
+                <div>
+                    <div class="crypto-name">{{ coin.name }}</div>
+                    <span class="crypto-symbol">{{ coin.symbol }}</span>
+                </div>
+                <div style="font-size: 0.9rem; color: #94a3b8;">#{{ coin.rank }}</div>
+            </div>
+            <div class="crypto-price">${{ "%.2f"|format(coin.price) }}</div>
+            {% if coin.change_24h >= 0 %}
+                <span class="price-change positive">+{{ "%.2f"|format(coin.change_24h) }}%</span>
+            {% else %}
+                <span class="price-change negative">{{ "%.2f"|format(coin.change_24h) }}%</span>
+            {% endif %}
+            <div style="margin-top: 1rem;">
+                <a href="{{ url_for('crypto_details', coin_id=coin.id) }}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="{{ url_for('crypto_market') }}" class="btn btn-primary">View All Cryptocurrencies</a>
+    </div>
+</section>
+
+<!-- WATCHLIST -->
+{% if watchlist %}
+<section style="margin: 3rem 0;">
+    <h2 style="color: #ffffff; margin-bottom: 1.5rem;">⭐ Your Watchlist</h2>
+    <div class="watchlist-grid">
+        {% for coin in watchlist %}
+        <div class="watchlist-item">
+            <div>
+                <strong>{{ coin.name }}</strong>
+                <span class="crypto-symbol">{{ coin.symbol }}</span>
+                <div class="crypto-price">${{ "%.2f"|format(coin.price) }}</div>
+                {% if coin.change_24h >= 0 %}
+                    <span class="price-change positive">+{{ "%.2f"|format(coin.change_24h) }}%</span>
+                {% else %}
+                    <span class="price-change negative">{{ "%.2f"|format(coin.change_24h) }}%</span>
+                {% endif %}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('crypto_details', coin_id=coin.id) }}" class="btn btn-primary btn-sm">View</a>
+                <form method="POST" action="{{ url_for('remove_from_watchlist', coin_id=coin.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="{{ url_for('crypto_search') }}" class="btn btn-success">Add More to Watchlist</a>
+    </div>
+</section>
+{% endif %}
+
+<!-- QUICK ACTIONS -->
+<section style="margin: 3rem 0;">
+    <h2 style="color: #ffffff; margin-bottom: 1.5rem;">⚡ Quick Actions</h2>
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <h3>🔍 Search Cryptocurrencies</h3>
+            <p>Find and discover new cryptocurrencies to track</p>
+            <a href="{{ url_for('crypto_search') }}" class="btn btn-primary" style="margin-top: 1rem;">Search Now</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>🔔 Create Price Alert</h3>
+            <p>Set up notifications for price movements</p>
+            <a href="{{ url_for('create_alert') }}" class="btn btn-success" style="margin-top: 1rem;">Create Alert</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>📈 View Market</h3>
+            <p>Browse all cryptocurrency prices and trends</p>
+            <a href="{{ url_for('crypto_market') }}" class="btn btn-secondary" style="margin-top: 1rem;">Go to Market</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>📊 Market Analytics</h3>
+            <p>View detailed market statistics and insights</p>
+            <span class="tag">Coming Soon</span>
+        </div>
+    </div>
+</section>
+
+<!-- AWS INTEGRATION INFO -->
+<section class="crypto-card" style="margin: 3rem 0;">
+    <h3 style="color: #6fb1ff; margin-bottom: 1rem;">☁️ AWS-Powered Features</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        <div>
+            <strong>🔒 Secure Authentication</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">User management with AWS IAM integration</p>
+        </div>
+        <div>
+            <strong>⚡ Real-Time Data</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Live price updates via AWS API Gateway</p>
+        </div>
+        <div>
+            <strong>📧 Email Notifications</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">AWS SNS for price alert delivery</p>
+        </div>
+        <div>
+            <strong>🗄️ Scalable Storage</strong>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Amazon DynamoDB for data persistence</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

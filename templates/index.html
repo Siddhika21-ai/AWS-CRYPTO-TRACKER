@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Crypto Price Tracker | AWS{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <h1>Scalable Crypto Price Tracker on AWS</h1>
+    <p>
+        Track real-time cryptocurrency prices, analyze historical trends,
+        and experience cloud-native scalability powered by AWS services.
+    </p>
+
+    <div class="hero-actions">
+        <a href="{{ url_for('guest_dashboard') }}" class="btn-primary">Explore as Guest</a>
+        <a href="{{ url_for('signup') }}" class="btn-outline">Sign Up</a>
+        <a href="{{ url_for('login') }}" class="btn-outline">Login</a>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="feature-section">
+    <div class="feature-card">
+        <h3>📊 Real-Time Price Tracking</h3>
+        <p>
+            Monitor live prices of popular cryptocurrencies like
+            <strong>Bitcoin</strong>, <strong>Ethereum</strong>, and more
+            using real-time data from the CoinGecko API.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <h3>📈 Historical Data Analysis</h3>
+        <p>
+            View and analyze historical cryptocurrency price trends stored
+            securely in <strong>Amazon DynamoDB</strong> for better market insights.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <h3>🚨 Price Alerts & Monitoring</h3>
+        <p>
+            Set custom price thresholds and receive alerts when prices rise
+            or fall using AWS CloudWatch and notification services.
+        </p>
+    </div>
+
+    <div class="feature-card">
+        <h3>☁️ AWS Scalability</h3>
+        <p>
+            Built on <strong>AWS Elastic Beanstalk</strong> with auto-scaling
+            to handle high traffic and ensure consistent performance.
+        </p>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome, {{ username }} 👋</h1>
+<p>
+This is your home page. From here you can explore features,
+navigate to dashboard, and understand how the crypto tracker works.
+</p>
+
+<ul>
+    <li>✔ View platform overview</li>
+    <li>✔ Learn how crypto tracking works</li>
+    <li>✔ Go to dashboard for real data</li>
+</ul>
+
+<a href="{{ url_for('dashboard') }}" class="btn-primary">
+Go to Dashboard
+</a>
+{% endblock %}

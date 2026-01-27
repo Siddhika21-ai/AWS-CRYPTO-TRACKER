@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}About - Crypto Price Tracker{% endblock %}
+
+{% block content %}
+
+<div class="about-section">
+
+    <!-- Header -->
+    <div class="about-hero">
+        <h1>About This Platform</h1>
+        <p>
+            A scalable, cloud-native cryptocurrency price tracking platform
+            built on AWS for real-time monitoring, analytics, and performance.
+        </p>
+    </div>
+
+    <!-- What You Can Do -->
+    <div class="about-main-card">
+        <h2>What You Can Do Here</h2>
+        <p>
+            This platform helps users track live cryptocurrency prices,
+            analyze historical trends, and understand how large-scale
+            cloud systems work in real-world financial applications.
+        </p>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="about-grid">
+
+        <div class="about-card">
+            <h3>📊 Live Price Tracking</h3>
+            <p>
+                Track real-time prices of cryptocurrencies like
+                <strong>Bitcoin</strong> and <strong>Ethereum</strong>
+                using the CoinGecko API.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>⏱ Price Alerts</h3>
+            <p>
+                Configure price thresholds and get notified when
+                cryptocurrency prices move beyond selected limits.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>📈 Historical Analysis</h3>
+            <p>
+                Analyze past cryptocurrency price trends stored securely
+                in <strong>Amazon DynamoDB</strong>.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>☁️ AWS Scalability</h3>
+            <p>
+                Application auto-scales using <strong>AWS Elastic Beanstalk</strong>
+                to handle high traffic efficiently.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>🔐 Secure Access</h3>
+            <p>
+                Separate and secure authentication for users and admins
+                using session-based access control.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>📡 Performance Monitoring</h3>
+            <p>
+                Application metrics and API performance are monitored
+                using <strong>AWS CloudWatch</strong>.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="about-main-card">
+        <h2>Technology Stack</h2>
+        <ul class="tech-list">
+            <li><strong>Backend:</strong> Python Flask</li>
+            <li><strong>API:</strong> CoinGecko (Crypto prices)</li>
+            <li><strong>Database:</strong> Amazon DynamoDB</li>
+            <li><strong>Cloud:</strong> AWS Elastic Beanstalk, CloudWatch, SNS</li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

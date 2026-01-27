@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Crypto Price Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="dark-bg">
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-brand">AWS Crypto Tracker</div>
+
+    <div class="nav-links">
+        {% if session.get('username') %}
+            <!-- Logged-in User -->
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('watchlist_page') }}">Watchlist</a>
+            <a href="{{ url_for('crypto_market') }}">Crypto Market</a>
+            <a href="{{ url_for('crypto_search') }}">Search</a>
+            <a href="{{ url_for('alerts_page') }}">Alerts</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+
+        {% elif session.get('admin') %}
+            <!-- Admin -->
+            <a href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+            <a href="{{ url_for('admin_logout') }}">Logout</a>
+
+        {% else %}
+            <!-- Guest -->
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('guest_dashboard') }}">Guest Dashboard</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('signup') }}">Signup</a>
+            <a class="btn-outline" href="{{ url_for('admin_login') }}">Admin Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+
+
+<!-- CONTENT -->
+<main class="page-content">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    © 2026 Scalable Crypto Price Tracker on AWS
+</footer>
+
+</body>
+</html>

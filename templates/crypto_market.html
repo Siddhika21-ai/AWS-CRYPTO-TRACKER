@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-content">
+    <div class="dashboard-hero">
+        <h1>Cryptocurrency Market</h1>
+        <p>Real-time prices and market data for top cryptocurrencies</p>
+    </div>
+
+    <!-- Market Stats -->
+    <div class="market-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ cryptocurrencies|length }}</div>
+            <div class="stat-label">Cryptocurrencies</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                ${{ "%.2f"|format(cryptocurrencies[0].price if cryptocurrencies else 0) }}
+            </div>
+            <div class="stat-label">BTC Price</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                ${{ "%.2f"|format(cryptocurrencies[1].price if cryptocurrencies|length > 1 else 0) }}
+            </div>
+            <div class="stat-label">ETH Price</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ watchlist|length }}</div>
+            <div class="stat-label">Watchlist</div>
+        </div>
+    </div>
+
+    <!-- Watchlist Section -->
+    {% if watchlist %}
+    <div class="watchlist-container">
+        <div class="watchlist-header">
+            <h2 class="watchlist-title">Your Watchlist</h2>
+            <a href="{{ url_for('crypto_search') }}" class="btn btn-primary btn-sm">
+                Add More
+            </a>
+        </div>
+
+        <div class="watchlist-grid">
+            {% for coin in watchlist %}
+            <div class="watchlist-item">
+                <div>
+                    <strong>{{ coin.name }}</strong>
+                    <span class="crypto-symbol">{{ coin.symbol }}</span>
+                    <div class="crypto-price">
+                        ${{ "%.2f"|format(coin.price) }}
+                    </div>
+                </div>
+
+                <form method="POST"
+                      action="{{ url_for('remove_from_watchlist', coin_id=coin.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Remove
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Cryptocurrency Table -->
+    <div class="crypto-table-container">
+        <h2 style="color:#ffffff;margin-bottom:1.5rem;">
+            Top Cryptocurrencies
+        </h2>
+
+        <table class="crypto-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Market Cap</th>
+                    <th>Volume (24h)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for coin in cryptocurrencies %}
+                <tr>
+                    <td>{{ coin.rank }}</td>
+
+                    <td>
+                        <a href="{{ url_for('crypto_details', coin_id=coin.id) }}"
+                           style="color:#6fb1ff;text-decoration:none;">
+                            {{ coin.name }}
+                        </a>
+                    </td>
+
+                    <td>{{ coin.symbol }}</td>
+
+                    <td class="crypto-price">
+                        ${{ "%.2f"|format(coin.price) }}
+                    </td>
+
+                    <td>
+                        {% if coin.change_24h >= 0 %}
+                            <span class="price-change positive">
+                                +{{ "%.2f"|format(coin.change_24h) }}%
+                            </span>
+                        {% else %}
+                            <span class="price-change negative">
+                                {{ "%.2f"|format(coin.change_24h) }}%
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>${{ "%.0f"|format(coin.market_cap) }}</td>
+                    <td>${{ "%.0f"|format(coin.volume_24h) }}</td>
+
+                    <td>
+                        {% if coin.id not in watchlist_items %}
+                        <form method="POST"
+                              action="{{ url_for('add_to_watchlist', coin_id=coin.id) }}">
+                            <button type="submit"
+                                    class="btn btn-success btn-sm">
+                                Watch
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="POST"
+                              action="{{ url_for('remove_from_watchlist', coin_id=coin.id) }}">
+                            <button type="submit"
+                                    class="btn btn-secondary btn-sm">
+                                Remove
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Refresh Button (simple reload only) -->
+    <div style="text-align:center;margin-top:2rem;">
+        <button onclick="location.reload()" class="btn btn-primary">
+            Refresh Prices
+        </button>
+    </div>
+
+</div>
+
+{% endblock %}
