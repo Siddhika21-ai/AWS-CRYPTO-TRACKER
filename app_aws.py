@@ -1,6 +1,8 @@
 # Hello I am Teja this is a sample templete code for AWS Capstone project
 # Hello again
 # I am testing git push and pull
+from decimal import Decimal
+
 import boto3
 import os
 from botocore.exceptions import ClientError
@@ -453,7 +455,8 @@ def create_alert():
         coin_id = request.form['coin_id']
         coin_name = request.form['coin_name']
         alert_type = request.form['alert_type']
-        target_price = float(request.form['target_price'])
+        target_price = Decimal(request.form['target_price'])
+
 
         try:
             # create alert id (timestamp based – AWS safe)
