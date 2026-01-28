@@ -36,7 +36,7 @@ watchlist_table = dynamodb.Table("UserWatchlists")
 alerts_table = dynamodb.Table("PriceAlerts")
 
 # SNS Topic ARN (replace later)
-SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:xxxx:crypto-alerts"
+SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:503561414488:aws_capstone_topic"
 
 def send_notification(subject, message):
     try:
