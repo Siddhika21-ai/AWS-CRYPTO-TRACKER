@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title>{% block title %}Crypto Price Tracker{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body class="dark-bg">
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
     <div class="nav-brand">AWS Crypto Tracker</div>
 
@@ -42,10 +46,10 @@
     </div>
 </nav>
 
-<!-- FLASH MESSAGES -->
+<!-- ================= FLASH MESSAGES (GLOBAL) ================= -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    <div class="flash-container">
+    <div class="flash-container" id="flash-container" role="alert" aria-live="polite">
       {% for category, message in messages %}
         <div class="flash flash-{{ category }}">
           {{ message }}
@@ -55,16 +59,26 @@
   {% endif %}
 {% endwith %}
 
-
-<!-- CONTENT -->
+<!-- ================= MAIN CONTENT ================= -->
 <main class="page-content">
     {% block content %}{% endblock %}
 </main>
 
-<!-- FOOTER -->
+<!-- ================= FOOTER ================= -->
 <footer class="footer">
     © 2026 Scalable Crypto Price Tracker on AWS
 </footer>
+
+<!-- ================= AUTO-DISMISS FLASH SCRIPT ================= -->
+<script>
+    setTimeout(() => {
+        const flashContainer = document.getElementById("flash-container");
+        if (flashContainer) {
+            flashContainer.style.opacity = "0";
+            setTimeout(() => flashContainer.remove(), 500);
+        }
+    }, 3000);
+</script>
 
 </body>
 </html>
