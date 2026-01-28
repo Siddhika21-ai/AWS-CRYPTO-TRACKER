@@ -483,8 +483,8 @@ def create_alert():
             return redirect(url_for('alerts_page'))
 
         except Exception as e:
-    print("Alert create error:", e)
-    flash(str(e), "error")
+            print("Alert create error:", e)
+            flash(str(e), "error")
 
 
     coins = crypto_service.get_top_cryptocurrencies(20)
